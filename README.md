@@ -31,7 +31,7 @@ sol = solve(prob, NewtonRaphson())
 
 println(sol.stats.nsteps) # 4
 ```
-Now we can train a surrogate by passing $f$ and min and max bounds for $u$ and $p$ into $train_surrogate$.
+Now we can train a surrogate by passing $f$ and min and max bounds for $u$ and $p$ into train_surrogate.
 ```
 up_min = [-2.,-2.,-2.,-2.] # the min bounds for u and p (first two numbers are for u, second two for p)
 up_max = [2.,2.,2.,2.] # the max bounds for u and p
@@ -44,7 +44,7 @@ sol = solve(prob, NewtonRaphson())
 
 println(sol.stats.nsteps) # should be <4
 ```
-$train_surrogate$ allows us to change a few hyperparameters as keyword arguments:
+train_surrogate allows us to change a few hyperparameters as keyword arguments:
 ```
 function train_surrogate(f, u_min, u_max, p_min, p_max; num_samples=1000, batchsize=100, numhiddenlayers=2, numhiddenunits=300, opt=Flux.AdamW, lr=7e-4, epochs=1000)
 ```
