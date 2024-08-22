@@ -33,12 +33,14 @@ println(sol.stats.nsteps) # 4
 ```
 Now we can train a surrogate by passing $f$ and min and max bounds for $u$ and $p$ into $create_surrogate$.
 ```
-model = create_surrogate(f, [-2.,-2.,-2.,-2.], [2.,2.,2.,2.])
+up_min = [-2.,-2.,-2.,-2.] # the min bounds for u and p (first two numbers are for u, second two for p)
+up_max = [2.,2.,2.,2.] # the max bounds for u and p
+model = train_surrogate(f, up_min, up_max)
 ```
 When that is done, we can solve it again using the models prediction as the new $u0$ and hope that the number of iterations until convergence decreased.
 ```
 prob = NonlinearProblem(f, model(vcat(u0,p)), p)
 sol = solve(prob, NewtonRaphson())
 
-println(sol.stats.nsteps) # 3
+println(sol.stats.nsteps) # should be <4
 ```
