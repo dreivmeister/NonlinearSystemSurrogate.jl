@@ -13,3 +13,16 @@ That can be used on its own or can be plugged into a solve routine like so: $New
 Doing this should reduce number of needed solving steps and therefore computation time.
 
 Here a quick example with actual code:
+
+```
+function f(u, p)
+    u .^ 3 .- p
+end
+u0 = rand(2)
+p = rand(2)
+prob = NonlinearProblem(f, u0, p)
+sol = solve(prob, NewtonRaphson())
+
+prob = NonlinearProblem(f, model(vcat(u0,p)), p)
+sol = solve(prob, NewtonRaphson())
+```
