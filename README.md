@@ -14,15 +14,31 @@ Doing this should reduce number of needed solving steps and therefore computatio
 
 Here a quick example with actual code:
 
+First we setup our function $f$ of which we want to find the root together with an initial guess vector $u0$ and a parameter vector $p$.
 ```
+using NonlinearSolve
+
 function f(u, p)
     u .^ 3 .- p
 end
 u0 = rand(2)
 p = rand(2)
+```
+Then we find a root using NonlinearSolve.jl and then look at how many iterations it took.
+```
 prob = NonlinearProblem(f, u0, p)
 sol = solve(prob, NewtonRaphson())
 
+println(sol.stats.nsteps) # 4
+```
+Now we can train a surrogate by passing $f$ and min and max bounds for $u$ and $p$ into $create_surrogate$.
+```
+model = create_surrogate(f, [-2.,-2.,-2.,-2.], [2.,2.,2.,2.])
+```
+When that is done, we can solve it again using the models prediction as the new $u0$ and hope that the number of iterations until convergence decreased.
+```
 prob = NonlinearProblem(f, model(vcat(u0,p)), p)
 sol = solve(prob, NewtonRaphson())
+
+println(sol.stats.nsteps) # 3
 ```
