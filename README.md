@@ -4,8 +4,8 @@
 
 
 
-So you have a nonlinear system $f(u,p) = 0$ that you want to solve using NonlinearSolve.jl (dont think thats a must).
-Maybe you need to solve it many times with different $p$ or $u$. Then you can use this package to train a neural network surrogate and use it to predict a root of $f(u,p) = 0$ given u and p like that: 
+So we have a nonlinear system $f(u,p) = 0$ that we want to solve using NonlinearSolve.jl (dont think thats a must).
+Maybe we need to solve it many times with different $p$ or $u$. Then we can use this package to train a neural network surrogate and use it to predict a root of $f(u,p) = 0$ given u and p like that: 
 $surrogate(u0,p) = u_{pred}$.
 Here $u0$ is an inital guess vector for the root and $u_{pred}$ is the predicted root vector $u$.
 That can be used on its own or can be plugged into a solve routine like so: $NewtonSolve(f, u_{pred}, p) = u$.
@@ -31,7 +31,7 @@ sol = solve(prob, NewtonRaphson())
 
 println(sol.stats.nsteps) # 4
 ```
-Now we can train a surrogate by passing $f$ and min and max bounds for $u$ and $p$ into $create_surrogate$.
+Now we can train a surrogate by passing $f$ and min and max bounds for $u$ and $p$ into $train_surrogate$.
 ```
 up_min = [-2.,-2.,-2.,-2.] # the min bounds for u and p (first two numbers are for u, second two for p)
 up_max = [2.,2.,2.,2.] # the max bounds for u and p
@@ -43,4 +43,8 @@ prob = NonlinearProblem(f, model(vcat(u0,p)), p)
 sol = solve(prob, NewtonRaphson())
 
 println(sol.stats.nsteps) # should be <4
+```
+$train_surrogate$ allows us to change a few hyperparameters as keyword arguments:
+```
+function train_surrogate(f, u_min, u_max, p_min, p_max; num_samples=1000, batchsize=100, numhiddenlayers=2, numhiddenunits=300, opt=Flux.AdamW, lr=7e-4, epochs=1000)
 ```
